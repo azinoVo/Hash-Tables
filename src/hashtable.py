@@ -57,7 +57,7 @@ class HashTable:
         hashed = self._hash_mod(key)
         # add to that particular index
         # If value already exists
-        if self.storage[hashed]:
+        if self.storage[hashed] is not None:
             print("There's a collision here!")
         else:
             self.storage[hashed] = value
@@ -71,8 +71,13 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        hashed = self._hash_mod(key)
 
+        if self.storage[hashed] is not None:
+            self.storage[hashed] = None
+
+        else:
+            print("This key does not have a value or is None!")
 
     def retrieve(self, key):
         '''
@@ -82,6 +87,15 @@ class HashTable:
 
         Fill this in.
         '''
+        hashed = self._hash_mod(key)
+        
+        if self.storage[hashed] is not None:
+            return self.storage[hashed]
+
+        else:
+            return None
+
+        
         pass
 
 
@@ -93,7 +107,6 @@ class HashTable:
         Fill this in.
         '''
         pass
-
 
 
 if __name__ == "__main__":
