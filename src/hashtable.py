@@ -106,6 +106,7 @@ class HashTable:
 
         Fill this in.
         '''
+        self.capacity *= 2
         pass
 
 
