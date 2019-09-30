@@ -47,13 +47,21 @@ class HashTable:
         '''
         Store the value with the given key.
 
+        Collisions should print a warning for right now
         Hash collisions should be handled with Linked List Chaining.
 
         Fill this in.
         '''
-        pass
 
-
+        # hash the key and get an integer index within storage to put the value
+        hashed = self._hash_mod(key)
+        # add to that particular index
+        # If value already exists
+        if self.storage[hashed]:
+            print("There's a collision here!")
+        else:
+            self.storage[hashed] = value
+        
 
     def remove(self, key):
         '''
