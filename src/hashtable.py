@@ -13,6 +13,7 @@ class HashTable:
     that accepts string keys
     '''
     def __init__(self, capacity):
+        self.count = 0
         self.capacity = capacity  # Number of buckets in the hash table
         self.storage = [None] * capacity
 
@@ -59,8 +60,9 @@ class HashTable:
         # If value already exists
         if self.storage[hashed] is not None:
             print("There's a collision here!")
-        else:
-            self.storage[hashed] = value
+            return
+
+        self.storage[hashed] = LinkedPair(key, value)
         
 
     def remove(self, key):
@@ -76,8 +78,7 @@ class HashTable:
         if self.storage[hashed] is not None:
             self.storage[hashed] = None
 
-        else:
-            print("This key does not have a value or is None!")
+        print("This key does not have a value or is None!")
 
     def retrieve(self, key):
         '''
@@ -90,13 +91,10 @@ class HashTable:
         hashed = self._hash_mod(key)
         
         if self.storage[hashed] is not None:
-            return self.storage[hashed]
+            return self.storage[hashed].value
 
         else:
             return None
-
-        
-        pass
 
 
     def resize(self):
@@ -107,7 +105,14 @@ class HashTable:
         Fill this in.
         '''
         self.capacity *= 2
-        pass
+        new_storage = [None] * self.capacity
+        
+        for pair in self.storage:
+            if pair is not None:
+                new_index = self._hash_mod(pair.key)
+                new_storage[new_index] = pair
+            
+        self.storage = new_storage
 
 
 if __name__ == "__main__":
