@@ -59,10 +59,16 @@ class HashTable:
         # add to that particular index
         # If value already exists
         if self.storage[hashed] is not None:
-            print("There's a collision here!")
-            return
+            current_node = self.storage[hashed]
+            while current_node.next:
+                if current_node.key == key:
+                    current_node.value = value
+                else:
+                    current_node = current_node.next
+            current_node.next = LinkedPair(key, value)
 
-        self.storage[hashed] = LinkedPair(key, value)
+        else:
+            self.storage[hashed] = LinkedPair(key, value)
         
 
     def remove(self, key):
