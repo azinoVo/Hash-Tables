@@ -60,11 +60,16 @@ class HashTable:
         # If value already exists
         if self.storage[hashed] is not None:
             current_node = self.storage[hashed]
+            # If next node has a value - this while handles updating dupe keys
+            # Return when update complete - if we reach the end without updates
+            # add the new LinkedPair to the end of the list
             while current_node.next:
                 if current_node.key == key:
                     current_node.value = value
+                    return
                 else:
                     current_node = current_node.next
+            # This will add a LinkedPair to the end of list if we make it out of the while loop
             current_node.next = LinkedPair(key, value)
 
         else:
@@ -97,7 +102,17 @@ class HashTable:
         hashed = self._hash_mod(key)
         
         if self.storage[hashed] is not None:
-            return self.storage[hashed].value
+            # return self.storage[hashed].value
+            current_node = self.storage[hashed]
+            while current_node.next:
+                if current_node.key == key:
+                    return current_node.value
+                else:
+                    current_node = current_node.next
+            # Handles the last node in the list since while loop will stop abruptly
+            if current_node.key == key:
+                return current_node.value
+            return None
 
         else:
             return None
