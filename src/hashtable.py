@@ -13,6 +13,7 @@ class HashTable:
     that accepts string keys
     '''
     def __init__(self, capacity):
+        self.count = 0
         self.capacity = capacity  # Number of buckets in the hash table
         self.storage = [None] * capacity
 
@@ -47,13 +48,34 @@ class HashTable:
         '''
         Store the value with the given key.
 
+        Collisions should print a warning for right now
         Hash collisions should be handled with Linked List Chaining.
 
         Fill this in.
         '''
-        pass
 
+        # hash the key and get an integer index within storage to put the value
+        hashed = self._hash_mod(key)
+        # add to that particular index
+        # If value already exists
+        if self.storage[hashed] is not None:
+            current_node = self.storage[hashed]
+            # If next node has a value - this while handles updating dupe keys
+            # Return when update complete - if we reach the end without updates
+            # add the new LinkedPair to the end of the list
+            while current_node.next is not None:
+                if current_node.key == key:
+                    current_node.value = value
+                    return
+                else:
+                    current_node = current_node.next
+            # This will add a LinkedPair to the end of list if we make it out of the while loop
+            current_node.next = LinkedPair(key, value)
+            return
 
+        else:
+            self.storage[hashed] = LinkedPair(key, value)
+        
 
     def remove(self, key):
         '''
@@ -63,8 +85,27 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        hashed = self._hash_mod(key)
 
+        # If first in linked list has the key - set the head as the next in the linked list if it exists (if current has a next)
+
+        if self.storage[hashed] is not None:
+            current_node = self.storage[hashed]
+            while current_node.next is not None:
+                if current_node.key == key:
+                    current_node = current_node.next
+                    return
+                elif current_node.next.key == key:
+                    if current_node.next.next is not None:
+                        current_node.next = current_node.next.next
+                        return
+                    else:
+                        current_node.next = None
+                        return
+                else:
+                    current_node = current_node.next
+
+        print("This key does not have a value or is None!")
 
     def retrieve(self, key):
         '''
@@ -74,7 +115,23 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        hashed = self._hash_mod(key)
+        
+        if self.storage[hashed] is not None:
+            # return self.storage[hashed].value
+            current_node = self.storage[hashed]
+            while current_node.next is not None:
+                if current_node.key == key:
+                    return current_node.value
+                else:
+                    current_node = current_node.next
+            # Handles the last node in the list since while loop will stop abruptly
+            if current_node.key == key:
+                return current_node.value
+            return None
+
+        else:
+            return None
 
 
     def resize(self):
@@ -84,8 +141,15 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
-
+        self.capacity *= 2
+        new_storage = [None] * self.capacity
+        
+        for pair in self.storage:
+            if pair is not None:
+                new_index = self._hash_mod(pair.key)
+                new_storage[new_index] = pair
+            
+        self.storage = new_storage
 
 
 if __name__ == "__main__":
