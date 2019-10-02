@@ -63,7 +63,7 @@ class HashTable:
             # If next node has a value - this while handles updating dupe keys
             # Return when update complete - if we reach the end without updates
             # add the new LinkedPair to the end of the list
-            while current_node.next:
+            while current_node.next is not None:
                 if current_node.key == key:
                     current_node.value = value
                     return
@@ -71,6 +71,7 @@ class HashTable:
                     current_node = current_node.next
             # This will add a LinkedPair to the end of list if we make it out of the while loop
             current_node.next = LinkedPair(key, value)
+            return
 
         else:
             self.storage[hashed] = LinkedPair(key, value)
@@ -86,8 +87,23 @@ class HashTable:
         '''
         hashed = self._hash_mod(key)
 
+        # If first in linked list has the key - set the head as the next in the linked list if it exists (if current has a next)
+
         if self.storage[hashed] is not None:
-            self.storage[hashed] = None
+            current_node = self.storage[hashed]
+            while current_node.next is not None:
+                if current_node.key == key:
+                    current_node = current_node.next
+                    return
+                elif current_node.next.key == key:
+                    if current_node.next.next is not None:
+                        current_node.next = current_node.next.next
+                        return
+                    else:
+                        current_node.next = None
+                        return
+                else:
+                    current_node = current_node.next
 
         print("This key does not have a value or is None!")
 
@@ -104,7 +120,7 @@ class HashTable:
         if self.storage[hashed] is not None:
             # return self.storage[hashed].value
             current_node = self.storage[hashed]
-            while current_node.next:
+            while current_node.next is not None:
                 if current_node.key == key:
                     return current_node.value
                 else:
